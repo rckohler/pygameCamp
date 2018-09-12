@@ -1,39 +1,57 @@
-def validateInput(prompt):
-    valid = False
-    while not valid:
+import random
+
+def getInt(prompt, max, min = 1):
+    while 1:
         try:
             ret = int(input(prompt))
-            valid = True
+            if ret <= max and ret >= min:
+                return ret
+            else:
+                print("invalid")
         except:
-            print("invalid entry");
-    return ret
+            print("invalid")
+
+class ListObject:
+    def __init__(self, name):
+        self.name = name
+    def enact(self):
+        print(self.name + ": enact error")
+
+class Attack(ListObject):
+    def __init__(self, attackName, accuracy, power):
+        self.name = attackName
+    def enact(self):
+        print(self.name + ":default enact")
+        return 1
 
 
-class Guy:
-    race = "Human"
-    def __init__(self):
-        self.str = 1
-        self.cha = 1
-        self.con = 1
-        self.int = 1
-        self.agi = 1
-        print("You have 5 points to spend on your guy. If you spend more than that you will come into the world as a weakling")
-        str = validateInput("How many points would you like to spend on strength?");
-        agi = validateInput("How many points would you like to spend on agility?");
-        int = validateInput("How many points would you like to spend on intelligence?");
-        con = validateInput("How many points would you like to spend on consitution?");
-        cha = validateInput("How many points would you like to spend on charisma?");
-        if (str + agi + int + con + cha) > 5:
-            print("you tried to cheat the system and are therefore cursed with weaklingness.")
+class Boxer:
+    def __init__(self, name, player = False):
+        self.name = name
+        self.player = player
+        self.hitsRemainig = 10
+        punch = Attack("punch")
+        kick = Attack("kick")
+        self.attacks = [punch, kick]
+    def chooseAttack(self):
+        if self.player:
+            action =  getObjectFromList("Choose an attack",self.attacks)
+            ret = action.enact()
+            return ret
         else:
-            self.str += str
-            self.agi += agi
-            self.con += con
-            self.cha += cha
-            self.int += int
-
-
-        self.currentHitPoints = self.con * 10
-        self.maxHitPoints = self.con * 10
-
-abe = Guy()
+            result = random.choice(self.attacks).enact()
+            return result
+def getObjectFromList(prompt, list):
+    counter = 1
+    for object in list:
+        print(str(counter) + ") " + object.name)
+        counter+=1
+    choice = getInt(prompt,list.__len__(), 1)
+    return list[choice-1]
+def game():
+    a = Boxer("Abe",True)
+    b = Boxer("Bob")
+    while a.hitsRemainig > 0 and b.hitsRemainig > 0:
+        b.hitsRemainig -=a.chooseAttack()
+        a.hitsRemainig -=b.chooseAttack()
+game()
